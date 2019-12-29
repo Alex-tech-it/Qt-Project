@@ -21,10 +21,13 @@ void MainWindow::on_pushButton_clicked()
 {
     QString Login = ui->login->text() ;
     QString Password = ui->password->text();
-    if( Login == "Гольчевский" && Password == "Сдал все программы"){
-        QMessageBox::information(this,"Вход","Вы успешно вошли в Гольчевского");
-    }else{
-        QMessageBox::warning(this,"Вход","Вас спалил Гольчевский, вы отчислены! Собирайте свои манатки и "
+    if (Login.isEmpty() || Password.isEmpty()){
+        QMessageBox::information(this,"Вход","Вы не ввели ничего, повторите попытку");
+
+    }else if( Login == "Гольчевский" && Password == "Сдал все программы" ){
+             QMessageBox::information(this,"Вход","Вы успешно вошли в Гольчевского");
+        }else{
+             QMessageBox::warning(this,"Вход","Вас спалил Гольчевский, вы отчислены! Собирайте свои манатки и "
                                          "проваливаете");
     }
 }
