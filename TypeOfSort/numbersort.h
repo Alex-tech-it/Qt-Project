@@ -22,8 +22,14 @@ private slots:
 
     void on_CreatArray_clicked();
 
+    void on_ShowCreatedArray_clicked();
+
+    void on_ShowSortArray_clicked();
+
 private:
     Ui::NumberSort *ui;
     int N;
+    bool flag = false;
+    void quickSort(QVector <int>& arr, int left, int right);
 };
 #endif // NUMBERSORT_H

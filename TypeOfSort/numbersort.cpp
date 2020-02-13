@@ -1,10 +1,11 @@
 #include "numbersort.h"
+#include "Random.h"
 #include "ui_numbersort.h"
 #include <QMessageBox>
 #include <QString>
-#include <QKeyEvent>
 #include <QDebug>
 #include <QVector>
+#include <QProcess>
 
 NumberSort::NumberSort(QWidget *parent)
     : QMainWindow(parent)
@@ -18,29 +19,90 @@ NumberSort::~NumberSort()
     delete ui;
 }
 
+void NumberSort::quickSort(QVector <int>& array, int left, int right) {
+    int i = left, j = right;
+    int temp;
+    int pivot = array[(left + right) / 2];
+
+    while (i <= j) {
+        while (array[i] < pivot){
+            i++;
+        }
+        while (array[j] > pivot){
+            j--;
+        }
+        if (i <= j) {
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+            i++;
+            j--;
+        }
+}
+
+    if (left < j)
+        quickSort(array, left, j);
+    if (i < right)
+        quickSort(array, i, right);
+
+}
+
 
 void NumberSort::on_SortArray_clicked()
 {
     QString buff;
     QString check;
+    QTime timer;
+    int time;
     QVector<int> array ;
+    if(flag){
+        // Creating File:"output.txt"
+        QFile Input("input.txt");
+        QFile Output("output.txt");
+        if(!Input.open(QIODevice::ReadOnly|QIODevice::Text)){
+            ui->statusBar->showMessage("Файл 'input.txt' не был создан.");
+            return;
+        }
 
-    // Creating File:"output.txt"
-    QFile Input("input.txt");
-    if(!Input.open(QIODevice::ReadOnly|QIODevice::Text|QIODevice::Truncate)){
-        ui->statusBar->showMessage("Файл 'output.txt' не был создан.");
+        if(!Output.open(QIODevice::WriteOnly|QIODevice::Text|QIODevice::Truncate)){
+            ui->statusBar->showMessage("Файл 'output.txt' не был создан.");
+            return;
+        }
+        Output.open(QIODevice::WriteOnly|QIODevice::Text|QIODevice::Truncate);
+        // Reading from "input" file
+        QTextStream readstream(&Input);
+        while(!readstream.atEnd()){
+            readstream >> buff;
+            array.push_back(buff.toInt());
+        }
+        Input.close();
+
+        // Sort function
+        quickSort(array,0,array.size() - 1);
+
+        // Writting sorted array
+
+        buff = "";
+        QTextStream writestream(&Output);
+        timer.start();
+        for(int i = 0; i < array.size(); i++){
+            buff =QString::number(array[i]) +  " ";
+            writestream << buff;
+            buff = "";
+        }
+        time = timer.elapsed() ;
+        QMessageBox::information(this,"Info","Массив был отсортирован за " + QString::number(time) + " миллисекунд ");
+        Output.close();
+
+
+    }else{
+         ui->statusBar->showMessage("Не был создан массив чисел");
+         return;
     }
-    QTextStream fromin(&Input);
-
-
-
-
-
 }
 
 void NumberSort::on_CreatArray_clicked()
 {
-
    bool ok;
    int buff;
    QString str;
@@ -55,6 +117,7 @@ void NumberSort::on_CreatArray_clicked()
            ui->statusBar->showMessage("Число N должно быть больше 0");
            return;
    }
+   flag = true;
    ui->statusBar->clearMessage();
 
    //Creating File:"input.txt"
@@ -68,8 +131,9 @@ void NumberSort::on_CreatArray_clicked()
    QTextStream writestream(&Input);
 
    // Creating and writing random number of 1 to 1 million
+
    for(int i = 0; i < N; i++){
-       buff = rand()%1000000 + 1;
+       buff = Random::get(1,1000000);
        str.setNum(buff);
        str += " ";
        writestream << str;
@@ -77,11 +141,32 @@ void NumberSort::on_CreatArray_clicked()
 
    // Show that work is done
    str = "";
-   str += QString::number(N) + " чисел было сгенерированно. Вы можете посмотреть файл по пусти" +
-           "'C:/QtProjects/Qt-Project/build-TypeOfSort-Desktop_Qt_5_12_2_MSVC2017_32bit-Debug' ";
+   str += QString::number(N) + " Чисел было сгенерированно.";
 
    QMessageBox::information(this,"Info",str);
 
    Input.close();
 }
 
+
+void NumberSort::on_ShowCreatedArray_clicked()
+{
+    if(flag){
+    QProcess* proc=new QProcess(this);
+    proc->start("notepad C://QtProjects/Qt-Project/build-TypeOfSort-Desktop_Qt_5_12_2_MSVC2017_32bit-Debug/input.txt");
+    }else{
+        ui->statusBar->showMessage("Не был создан массив чисел для просмотра");
+        return;
+    }
+}
+
+void NumberSort::on_ShowSortArray_clicked()
+{
+    if(flag){
+    QProcess* proc=new QProcess(this);
+    proc->start("notepad C://QtProjects/Qt-Project/build-TypeOfSort-Desktop_Qt_5_12_2_MSVC2017_32bit-Debug/output.txt");
+    }else{
+        ui->statusBar->showMessage("Не был создан массив чисел для обработки просмотра");
+        return;
+    }
+}
