@@ -25,13 +25,10 @@ void NumberSort::quickSort(QVector <int>& array, int left, int right) {
     int pivot = array[(left + right) / 2];
 
     while (i <= j) {
-        while (array[i] < pivot){
-            i++;
-        }
-        while (array[j] > pivot){
-            j--;
-        }
-        if (i <= j) {
+        while (array[i] < pivot) i++;
+        while (array[j] > pivot) j--;
+        if (i <= j)
+        {
             temp = array[i];
             array[i] = array[j];
             array[j] = temp;
@@ -85,7 +82,7 @@ void NumberSort::on_SortArray_clicked()
         buff = "";
         QTextStream writestream(&Output);
         timer.start();
-        for(int i = 0; i < array.size(); i++){
+        for(int i = 1; i < array.size(); i++){
             buff =QString::number(array[i]) +  " ";
             writestream << buff;
             buff = "";
@@ -133,7 +130,7 @@ void NumberSort::on_CreatArray_clicked()
    // Creating and writing random number of 1 to 1 million
 
    for(int i = 0; i < N; i++){
-       buff = Random::get(1,1000000);
+       buff = Random::get(1,N);
        str.setNum(buff);
        str += " ";
        writestream << str;
@@ -153,7 +150,7 @@ void NumberSort::on_ShowCreatedArray_clicked()
 {
     if(flag){
     QProcess* proc=new QProcess(this);
-    proc->start("notepad C://QtProjects/Qt-Project/build-TypeOfSort-Desktop_Qt_5_12_2_MSVC2017_32bit-Debug/input.txt");
+    proc->start("notepad ../build-TypeOfSort-Desktop_x86_windows_msys_pe_32bit-Debug/input.txt");
     }else{
         ui->statusBar->showMessage("Не был создан массив чисел для просмотра");
         return;
@@ -164,7 +161,7 @@ void NumberSort::on_ShowSortArray_clicked()
 {
     if(flag){
     QProcess* proc=new QProcess(this);
-    proc->start("notepad C://QtProjects/Qt-Project/build-TypeOfSort-Desktop_Qt_5_12_2_MSVC2017_32bit-Debug/output.txt");
+    proc->start("notepad ../build-TypeOfSort-Desktop_x86_windows_msys_pe_32bit-Debug/output.txt");
     }else{
         ui->statusBar->showMessage("Не был создан массив чисел для обработки просмотра");
         return;
