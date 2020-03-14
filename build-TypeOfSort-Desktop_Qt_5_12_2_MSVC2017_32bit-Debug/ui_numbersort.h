@@ -28,7 +28,7 @@ class Ui_NumberSort
 {
 public:
     QWidget *centralwidget;
-    QWidget *widget;
+    QVBoxLayout *verticalLayout_2;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
@@ -46,7 +46,7 @@ public:
         if (NumberSort->objectName().isEmpty())
             NumberSort->setObjectName(QString::fromUtf8("NumberSort"));
         NumberSort->setEnabled(true);
-        NumberSort->resize(492, 210);
+        NumberSort->resize(527, 265);
         NumberSort->setAutoFillBackground(false);
         centralwidget = new QWidget(NumberSort);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
@@ -56,15 +56,13 @@ public:
         sizePolicy.setHeightForWidth(centralwidget->sizePolicy().hasHeightForWidth());
         centralwidget->setSizePolicy(sizePolicy);
         centralwidget->setMinimumSize(QSize(492, 138));
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(10, 10, 471, 151));
-        verticalLayout = new QVBoxLayout(widget);
+        verticalLayout_2 = new QVBoxLayout(centralwidget);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        label = new QLabel(widget);
+        label = new QLabel(centralwidget);
         label->setObjectName(QString::fromUtf8("label"));
         QFont font;
         font.setPointSize(12);
@@ -72,7 +70,7 @@ public:
 
         horizontalLayout->addWidget(label);
 
-        lineEdit = new QLineEdit(widget);
+        lineEdit = new QLineEdit(centralwidget);
         lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
 
         horizontalLayout->addWidget(lineEdit);
@@ -82,7 +80,7 @@ public:
 
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        CreatArray = new QPushButton(widget);
+        CreatArray = new QPushButton(centralwidget);
         CreatArray->setObjectName(QString::fromUtf8("CreatArray"));
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
@@ -93,7 +91,7 @@ public:
 
         gridLayout->addWidget(CreatArray, 0, 0, 1, 1);
 
-        SortArray = new QPushButton(widget);
+        SortArray = new QPushButton(centralwidget);
         SortArray->setObjectName(QString::fromUtf8("SortArray"));
         sizePolicy1.setHeightForWidth(SortArray->sizePolicy().hasHeightForWidth());
         SortArray->setSizePolicy(sizePolicy1);
@@ -101,12 +99,12 @@ public:
 
         gridLayout->addWidget(SortArray, 0, 1, 1, 1);
 
-        ShowCreatedArray = new QPushButton(widget);
+        ShowCreatedArray = new QPushButton(centralwidget);
         ShowCreatedArray->setObjectName(QString::fromUtf8("ShowCreatedArray"));
 
         gridLayout->addWidget(ShowCreatedArray, 1, 0, 1, 1);
 
-        ShowSortArray = new QPushButton(widget);
+        ShowSortArray = new QPushButton(centralwidget);
         ShowSortArray->setObjectName(QString::fromUtf8("ShowSortArray"));
 
         gridLayout->addWidget(ShowSortArray, 1, 1, 1, 1);
@@ -114,10 +112,13 @@ public:
 
         verticalLayout->addLayout(gridLayout);
 
+
+        verticalLayout_2->addLayout(verticalLayout);
+
         NumberSort->setCentralWidget(centralwidget);
         menubar = new QMenuBar(NumberSort);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 492, 26));
+        menubar->setGeometry(QRect(0, 0, 527, 26));
         NumberSort->setMenuBar(menubar);
         statusBar = new QStatusBar(NumberSort);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));

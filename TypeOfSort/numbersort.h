@@ -30,6 +30,9 @@ private:
     Ui::NumberSort *ui;
     int N;
     bool flag = false;
-    void quickSort(QVector <int>& arr, int left, int right);
+    void quickSort(QVector <int>& array, int left, int right);
+    void NaturalSort(QVector <int>& array,int size);
+    bool sheck_fucntion(QVector <int>& mess);
+    void SortShortArray(QVector <int>& ar);
 };
 #endif // NUMBERSORT_H
