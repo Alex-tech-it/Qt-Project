@@ -20,18 +20,19 @@ NumberSort::~NumberSort()
     delete ui;
 }
 
+   //QuickSort//
 void NumberSort::quickSort(QVector <int>& array, int left, int right) {
 
-//QuickSort//
-   int i = left, j = right;
+
+    int i = left, j = right;
     int temp;
     int pivot = array[(left + right) / 2];
 
     while (i <= j) {
-        while (array[i] < pivot){
+        while (array[i] < pivot){ //
             i++;
         }
-        while (array[j] > pivot){
+        while (array[j] > pivot){ //
             j--;
         }
         if (i <= j) {
@@ -76,6 +77,9 @@ bool NumberSort::sheck_fucntion(QVector <int>& mess){
     return true;
 }
 
+    /*
+     * Type of sort - natural sort
+     */
 void NumberSort::NaturalSort(QVector <int>& array, int size){
     /*  Создаем промежуточные массивы
      *  Серия 1 - mess_1
@@ -102,7 +106,7 @@ void NumberSort::NaturalSort(QVector <int>& array, int size){
            shit = false;
        }
 
-       for(int j = 1; j < size-1; j++){
+       for(int j = 1; j < size - 1; j++){
            /*Используем распеределение по сериям с помочью флага - shit
             * Если true - mess_1
             * Если False - mess_2
@@ -138,6 +142,9 @@ void NumberSort::NaturalSort(QVector <int>& array, int size){
        int chg = array.size() - 1;
        int count = 0;
        array.clear();
+       /*
+        * Processing of each series
+        */
        while(true){
             while(mess_1[m1] != 0){
                 result.push_back(mess_1[m1]);
@@ -157,7 +164,6 @@ void NumberSort::NaturalSort(QVector <int>& array, int size){
                 m2++;
             }
 
-            //SortShortArray(result);
             quickSort(result,0,result.size() - 1);
 
             for(int i = 0; i < result.size(); i++){
