@@ -21,6 +21,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/* Structer that saved each symbol,chance,bin_code; x,y - rendering*/
 
 struct Frequence{
 public:
@@ -28,7 +29,6 @@ public:
        int x;
        int y;
        QChar symbol;
-       Frequence* left, *right;
        QString bin_code ;
 
        bool CheckSymbolInBinCode(QChar chr){
@@ -102,9 +102,9 @@ bool CheckVector(QVector<Frequence>& vector){
 void MainWindow::on_ButtonAnswer_clicked(){
 
     QString answer = ui->EditAnswer->text();
-    QHash<QChar,float> Emplyees;
-    QHash<QChar,float> Extra;
-    QVector<Frequence> vector;
+    QHash<QChar,float> Emplyees;            // Dictionary symbols
+    QHash<QChar,float> Extra;               // Intermediate dictionary
+    QVector<Frequence> vector;              // Vector of structers in which we will store data
 
 
     int count_symbols = 0;
@@ -113,7 +113,7 @@ void MainWindow::on_ButtonAnswer_clicked(){
 
     /* Empty offer check */
 
-    if(answer == ""){
+    if(answer == "" || answer.size() == 1){
         ui->statusbar->showMessage("Не введено предложение",5000);
         return;
     }
@@ -167,6 +167,8 @@ void MainWindow::on_ButtonAnswer_clicked(){
     /* First step - sorting elements/chances */
 
     VectorSort(vector);
+
+
     qDebug() << "Check VectorSort " << endl;
     for(int j = 0; j < vector.size(); j++){
         qDebug() << "chance = " << vector[j].chance << " : symbol = " << vector[j].symbol;
@@ -176,13 +178,13 @@ void MainWindow::on_ButtonAnswer_clicked(){
 
 
     /* Creating scene for drawing lines*/
+
     int width = ui->graphicsView->width();
     int height = ui->graphicsView->height();
     QGraphicsScene *scene = new QGraphicsScene();
     scene->setSceneRect(ui->graphicsView->x()+5,ui->graphicsView->y()+20,width,height);
     ui->graphicsView->setScene(scene);
 
-    //qDebug() << "BinarySymbol" << Frequence::bin_code << endl;
 
     /* Initialization  of variables that will be used in rendering */
 
@@ -261,7 +263,8 @@ void MainWindow::on_ButtonAnswer_clicked(){
 
         /* Cases of rendering breches */
 
-        if(vector[min_j].y == vector[min_2_j].y && vector[min_j].x < vector[min_2_j].x){
+        if(vector[min_j].y == vector[min_2_j].y && vector[min_j].x < vector[min_2_j].x){        // ---Case 1---
+
 
              /* Console output */
 
@@ -277,11 +280,15 @@ void MainWindow::on_ButtonAnswer_clicked(){
              vector[min_j].y -= add_height;
              scene->addLine(vector[min_2_j].x,vector[min_2_j].y,vector[min_j].x,vector[min_j].y);
 
+             /* Create tree branches and draw them */
+
              if(vector[min_j].chance >= vector[min_2_j].chance){
                  QGraphicsTextItem *text1 = scene->addText("(1)");
                  qreal avarage_x = (vector[min_j].x - add_width + vector[min_j].x) / 2 - 10;
                  qreal avarage_y = (vector[min_j].y + add_height + vector[min_j].y) / 2 - 5;
                  text1->setPos(avarage_x,avarage_y);
+
+                 /* Store binaru code each symbol*/
 
                  if(vector[min_j].CheckSymbolInBinCode(vector[min_j].symbol)){
                      QString str = "'";
@@ -301,6 +308,8 @@ void MainWindow::on_ButtonAnswer_clicked(){
                  qreal avarage_x_2 = (vector[min_2_j].x + vector[min_j].x) / 2 - 10;
                  qreal avarage_y_2 = (vector[min_2_j].y + vector[min_j].y) / 2 - 5;
                  text2->setPos(avarage_x_2,avarage_y_2);
+
+                 /* Store binaru code each symbol*/
 
                  if(vector[min_2_j].CheckSymbolInBinCode(vector[min_2_j].symbol)){
                      QString str = "'";
@@ -359,7 +368,7 @@ void MainWindow::on_ButtonAnswer_clicked(){
              qDebug() << " vector[min_j].x = " << vector[min_j].x << " : vector[min_j].y = " << vector[min_j].y
                       << " vector[min_2_j].x = " << vector[min_2_j].x << " : vector[min_2_j].y = " << vector[min_2_j].x << endl;
 
-         }else if(vector[min_j].y == vector[min_2_j].y && vector[min_j].x > vector[min_2_j].x){
+         }else if(vector[min_j].y == vector[min_2_j].y && vector[min_j].x > vector[min_2_j].x){ // ---Case 2---
 
              /* Console output */
 
@@ -456,13 +465,13 @@ void MainWindow::on_ButtonAnswer_clicked(){
              qDebug() << " vector[min_j].x = " << vector[min_j].x << " : vector[min_j].y = " << vector[min_j].y << endl
                       << " vector[min_2_j].x = " << vector[min_2_j].x << " : vector[min_2_j].y = " << vector[min_2_j].x << endl;
 
-         }else if(vector[min_j].y < vector[min_2_j].y && vector[min_j].x < vector[min_2_j].x){
+         }else if(vector[min_j].y < vector[min_2_j].y && vector[min_j].x < vector[min_2_j].x){  // ---Case 3---
 
              /* Console output */
 
              qDebug() << " ---- if = 3.1 ----";
-             qDebug() << " vector[min_j].x = " << vector[min_j].x << " : vector[min_j].y = " << vector[min_j].y << endl
-                      << " vector[min_2_j].x = " << vector[min_2_j].x << " : vector[min_2_j].y = " << vector[min_2_j].x << endl;
+             qDebug() << " vector[min_j].x = " << vector[min_j].x << " : vector[min_j].y = " << vector[min_j].y << endl;
+             qDebug() << " vector[min_2_j].x = " << vector[min_2_j].x << " : vector[min_2_j].y = " << vector[min_2_j].x << endl;
 
 
              /* Rendering line on scnece between the first min and the second min */
@@ -554,7 +563,7 @@ void MainWindow::on_ButtonAnswer_clicked(){
              qDebug() << " vector[min_j].x = " << vector[min_j].x << " : vector[min_j].y = " << vector[min_j].y << endl
                       << " vector[min_2_j].x = " << vector[min_2_j].x << " : vector[min_2_j].y = " << vector[min_2_j].x << endl;
 
-         }else if(vector[min_j].y < vector[min_2_j].y && vector[min_j].x > vector[min_2_j].x){
+         }else if(vector[min_j].y < vector[min_2_j].y && vector[min_j].x > vector[min_2_j].x){  // ---Case 4---
 
              /* Console output */
 
@@ -652,7 +661,7 @@ void MainWindow::on_ButtonAnswer_clicked(){
              qDebug() << " vector[min_j].x = " << vector[min_j].x << " : vector[min_j].y = " << vector[min_j].y << endl
                       << " vector[min_2_j].x = " << vector[min_2_j].x << " : vector[min_2_j].y = " << vector[min_2_j].x << endl;
 
-         }else if(vector[min_j].y > vector[min_2_j].y && vector[min_j].x > vector[min_2_j].x){
+         }else if(vector[min_j].y > vector[min_2_j].y && vector[min_j].x > vector[min_2_j].x){  // ---Case 5---
 
              /* Console output */
 
@@ -757,7 +766,7 @@ void MainWindow::on_ButtonAnswer_clicked(){
             qDebug() << " vector[min_j].x = " << vector[min_j].x << " : vector[min_j].y = " << vector[min_j].y << endl
                      << " vector[min_2_j].x = " << vector[min_2_j].x << " : vector[min_2_j].y = " << vector[min_2_j].x << endl;
 
-         }else if(vector[min_j].y > vector[min_2_j].y && vector[min_j].x < vector[min_2_j].x){
+         }else if(vector[min_j].y > vector[min_2_j].y && vector[min_j].x < vector[min_2_j].x){  // ---Case 6---
 
             /* Console output */
 
@@ -876,16 +885,25 @@ void MainWindow::on_ButtonAnswer_clicked(){
              qDebug() << "chance = " << vector[j].chance << " : symbol = " << vector[j].symbol;
          }
          qDebug() << "vector size  = " << vector.size() << endl;
+
+         // End while() loop
      }
 
-    int line;
+
+    int line; // saved number line with binary code in vector
+
+    /* Loop for find line with all binary code */
     for(int j = 0; j < vector.size(); j++){             // going to line symbols
         QString buff = vector[j].bin_code;
         int count = 0;
-        for(int g = 0; g < buff.size(); g++){           // going on symbols in bin_code in vector
-            for(int h = 0; h < vector.size(); h++){     // goint on symbols in vector order to find needed symbol in buff
-                if(buff[g] == vector[h].symbol){
-                    count++;
+        for(int g = 1; g < buff.size() - 1; g++){
+            // going on symbols in bin_code in vector
+            if(buff[g-1] == "'" && buff[g+1] == "'"){
+
+                for(int h = 0; h < vector.size(); h++){     // goint on symbols in vector order to find needed symbol in buff
+                    if(buff[g] == vector[h].symbol){
+                     count++;
+                    }
                 }
             }
 
@@ -894,34 +912,73 @@ void MainWindow::on_ButtonAnswer_clicked(){
             line = j;
             break;
         }
+
     }
 
     /* Rendering codes*/
     int heigh_this = 100;
-    int widht_this = 100;
+    int widht_this = 50;
     QString store = vector[line].bin_code;
+    if(store.size() <= 12 ){
+        int count = 1;
+        while(count < store.size()){
+                QString str = " - ";
+                if(store[count+2] == 2){
+                    str += "0";
+                }else{
+                    str += "1";
+                }
+                QChar gag = store[count];
+
+
+                if(gag == ' '){
+                    QGraphicsTextItem *text1 = scene->addText("Space");
+                    text1->setPos(widht_this,heigh_this);
+                    QGraphicsTextItem *text2 = scene->addText(str);
+                    text2->setPos(widht_this+40,heigh_this);
+                    heigh_this += 20;
+                }else{
+                    QGraphicsTextItem *text1 = scene->addText(gag);
+                    text1->setPos(widht_this,heigh_this);
+                    QGraphicsTextItem *text2 = scene->addText(str);
+                    text2->setPos(widht_this+10,heigh_this);
+                    heigh_this += 20;
+                }
+                count += 4;
+                str = "";
+            }
+    }else{
     for(int j = 1; j < store.size() - 1; j++){
         if(store[j-1] == "'" && store[j+1] == "'"){
-            QString str = "- ";
-            QChar gag = store[j];
-
+            QString str = " - ";
+            QChar gag = store[j];  
+            store[j+1] = ' ';
             int count = j+2;
             while(store[count] != "'" && !store[count].isNull()){
-                if(store[count] == '2'){
-                    str += '0';
-                    count++;
-                }else{
-                    str += store[count];
-                    count++;
-                }
+                 if(store[count] == '2'){
+                     str += '0';
+                     count++;
+                 }else{
+                     str += store[count];
+                     count++;
+                 }
             }
-
-            QGraphicsTextItem *text1 = scene->addText(gag);
-            text1->setPos(widht_this,heigh_this);
-            QGraphicsTextItem *text2 = scene->addText(str);
-            text2->setPos(widht_this+10,heigh_this);
-            heigh_this += 20;
+            if(gag == ' '){
+                QGraphicsTextItem *text1 = scene->addText("Space");
+                text1->setPos(widht_this,heigh_this);
+                QGraphicsTextItem *text2 = scene->addText(str);
+                text2->setPos(widht_this+40,heigh_this);
+                heigh_this += 20;
+            }else{
+                QGraphicsTextItem *text1 = scene->addText(gag);
+                text1->setPos(widht_this,heigh_this);
+                QGraphicsTextItem *text2 = scene->addText(str);
+                text2->setPos(widht_this+10,heigh_this);
+                heigh_this += 20;
+            }
+            str = "";
         }
 
     }
+  }
 }
